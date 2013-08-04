@@ -1,0 +1,113 @@
+: Saved
+: Written by enable_15 at 08:50:26.415 UTC Sun Aug 4 2013
+!
+ASA Version 7.2(4)
+!
+hostname onyx
+domain-name lame.no
+enable password <removed> encrypted
+passwd <removed> encrypted
+names
+!
+interface Vlan1
+ nameif inside
+ security-level 100
+ ip address 10.0.0.1 255.255.255.0
+!
+interface Vlan2
+ nameif outside
+ security-level 0
+ ip address dhcp setroute
+!
+interface Vlan3
+ no forward interface Vlan1
+ nameif dmz
+ security-level 50
+ no ip address
+!
+interface Ethernet0/0
+ switchport access vlan 2
+!
+interface Ethernet0/1
+!
+interface Ethernet0/2
+!
+interface Ethernet0/3
+!
+interface Ethernet0/4
+!
+interface Ethernet0/5
+!
+interface Ethernet0/6
+!
+interface Ethernet0/7
+!
+ftp mode passive
+dns server-group DefaultDNS
+ domain-name lame.no
+object-group network Webserver
+object-group service mosh udp
+ description Mobile Shell
+ port-object range 60000 61000
+access-list outside_access_in extended permit tcp any interface outside eq ssh
+access-list outside_access_in extended permit tcp any interface outside eq www
+access-list outside_access_in extended permit tcp any interface outside eq smtp
+access-list outside_access_in extended permit tcp any interface outside eq https
+access-list outside_access_in extended permit udp any host 10.0.0.5 object-group mosh
+pager lines 24
+logging asdm informational
+mtu inside 1500
+mtu outside 1500
+mtu dmz 1500
+ip local pool Clients 10.0.0.50-10.0.0.60 mask 255.255.255.0
+icmp unreachable rate-limit 1 burst-size 1
+asdm image disk0:/asdm-524.bin
+no asdm history enable
+arp timeout 14400
+global (outside) 1 interface
+nat (inside) 1 0.0.0.0 0.0.0.0
+static (inside,outside) tcp interface ssh 10.0.0.5 ssh netmask 255.255.255.255
+static (inside,outside) tcp interface www 10.0.0.5 www netmask 255.255.255.255
+static (inside,outside) tcp interface smtp 10.0.0.5 smtp netmask 255.255.255.255
+static (inside,outside) tcp interface https 10.0.0.5 https netmask 255.255.255.255
+static (inside,outside) udp interface 60000 10.0.0.5 60000 netmask 255.255.255.255
+static (inside,outside) udp interface 60001 10.0.0.5 60001 netmask 255.255.255.255
+static (inside,outside) udp interface 60002 10.0.0.5 60002 netmask 255.255.255.255
+static (inside,outside) udp interface 60003 10.0.0.5 60003 netmask 255.255.255.255
+static (inside,outside) udp interface 60004 10.0.0.5 60004 netmask 255.255.255.255
+static (inside,outside) udp interface 60005 10.0.0.5 60005 netmask 255.255.255.255
+static (inside,outside) udp interface 60006 10.0.0.5 60006 netmask 255.255.255.255
+static (inside,outside) udp interface 60007 10.0.0.5 60007 netmask 255.255.255.255
+static (inside,outside) udp interface 60008 10.0.0.5 60008 netmask 255.255.255.255
+static (inside,outside) udp interface 60009 10.0.0.5 60009 netmask 255.255.255.255
+static (inside,outside) udp interface 60010 10.0.0.5 60010 netmask 255.255.255.255
+access-group outside_access_in in interface outside
+timeout xlate 3:00:00
+timeout conn 1:00:00 half-closed 0:10:00 udp 0:02:00 icmp 0:00:02
+timeout sunrpc 0:10:00 h323 0:05:00 h225 1:00:00 mgcp 0:05:00 mgcp-pat 0:05:00
+timeout sip 0:30:00 sip_media 0:02:00 sip-invite 0:03:00 sip-disconnect 0:02:00
+timeout sip-provisional-media 0:02:00 uauth 0:05:00 absolute
+http server enable
+http 10.0.0.0 255.255.255.0 inside
+no snmp-server location
+no snmp-server contact
+snmp-server enable traps snmp authentication linkup linkdown coldstart
+vpn-sessiondb max-session-limit 3
+telnet timeout 5
+ssh timeout 5
+console timeout 0
+dhcpd auto_config outside
+!
+dhcpd address 10.0.0.15-10.0.0.46 inside
+dhcpd enable inside
+!
+
+ssl encryption 3des-sha1 aes256-sha1 rc4-md5
+username kradalby password <removed> encrypted privilege 15
+username kradalby attributes
+ vpn-framed-ip-address 10.0.0.50 255.255.255.0
+!
+!
+prompt hostname context
+Cryptochecksum:<removed>
+
