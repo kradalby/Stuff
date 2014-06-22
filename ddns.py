@@ -5,6 +5,7 @@ requests
 """
 
 import requests
+from datetime import datetime
 
 DOMAIN  = "fap.no"
 SUBDOMAIN  = "tw"
@@ -49,19 +50,22 @@ def update_record(domain, ip, subdomain=None):
      
 
 if __name__ == "__main__":
-    pub_ip = get_public_ip()
-    dns_ip = get_current_dns_ip(DOMAIN, subdomain=SUBDOMAIN)
+    try:
+        pub_ip = get_public_ip()
+        dns_ip = get_current_dns_ip(DOMAIN, subdomain=SUBDOMAIN)
 
-    if pub_ip == dns_ip:
-        print("Current ip: %s, no change, so no update" % pub_ip)
-    else: 
-        print("IP has changed from %s to %s, updating" % (dns_ip, pub_ip))
-        if update_record(DOMAIN, pub_ip, subdomain=SUBDOMAIN):
-            print("Update successful")
-        else:
-            print("Update failed")
+        if pub_ip == dns_ip:
+            print("%s - Current ip: %s, no change, so no update" % (datetime.now(), pub_ip))
+        else: 
+            print("%s - IP has changed from %s to %s, updating" % (datetime.now(), dns_ip, pub_ip))
+            if update_record(DOMAIN, pub_ip, subdomain=SUBDOMAIN):
+                print("%s - Update successful" % datetime.now())
+            else:
+                print("%s - Update failed" % datetime.now())
                 
     
+    except:
+        print("%s - Something went wrong, do you have internet?" % datetime.now())
 
 
 
