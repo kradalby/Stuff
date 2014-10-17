@@ -9,8 +9,8 @@ import requests
 DOMAIN  = "fap.no"
 SUBDOMAIN  = "tw"
 
-CLIENTID = ""
-APIKEY = ""
+CLIENTID = "cKVPyBytiQNGgzBXnRVIp"
+APIKEY = "e58b331cfbac327a62fe00186d788078"
 APIURL = "https://api.digitalocean.com/v1/domains/"
 APIURL2 = "client_id=%s&api_key=%s" % (CLIENTID, APIKEY)
 
